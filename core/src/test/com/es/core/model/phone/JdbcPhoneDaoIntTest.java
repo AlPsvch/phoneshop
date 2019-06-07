@@ -152,6 +152,36 @@ public class JdbcPhoneDaoIntTest {
         assertTrue(returnedPhoneOptional.isPresent());
         Phone returnedPhone = returnedPhoneOptional.get();
 
-        assertEquals(colorSet.size(), returnedPhone.getColors().size());
+        assertEquals(phone1.getId(), returnedPhone.getId());
+        assertEquals(phone1.getColors().size(), returnedPhone.getColors().size());
+    }
+
+    @Test
+    @Transactional
+    public void testUpdate() {
+        phone1.setColors(colorSet);
+
+        phoneDao.save(phone1);
+        long phoneId = phone1.getId();
+
+        Optional<Phone> returnedPhoneOptional = phoneDao.get(phoneId);
+        assertTrue(returnedPhoneOptional.isPresent());
+        Phone returnedPhone = returnedPhoneOptional.get();
+
+        assertEquals(phone1.getId(), returnedPhone.getId());
+        assertEquals(phone1.getColors().size(), returnedPhone.getColors().size());
+
+        phone1.setColors(new HashSet<>());
+        phone1.setBrand(PHONE_BRAND_2);
+
+        phoneDao.save(phone1);
+
+        Optional<Phone> updatedPhoneOptional = phoneDao.get(phoneId);
+        assertTrue(updatedPhoneOptional.isPresent());
+        Phone updatedPhone = updatedPhoneOptional.get();
+
+        assertEquals(phone1.getId(), updatedPhone.getId());
+        assertEquals(phone1.getBrand(), updatedPhone.getBrand());
+        assertEquals(phone1.getColors().size(), updatedPhone.getColors().size());
     }
 }
