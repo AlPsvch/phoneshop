@@ -3,6 +3,7 @@ package com.es.core.model.phone;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 public class Phone {
@@ -271,5 +272,18 @@ public class Phone {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Phone phone = (Phone) object;
+        return Objects.equals(id, phone.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
