@@ -1,6 +1,8 @@
 package com.es.core.model.phone;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -10,17 +12,15 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class JdbcPhoneDao implements PhoneDao {
 
-    private static final String GET_PHONE_BY_KEY_QUERY = "SELECT phones.*, colors.id AS colorId, colors.code AS colorCode FROM phones " +
-            "LEFT JOIN phone2color ON phones.id = phone2color.phoneId " +
-            "LEFT JOIN colors ON colors.id = phone2color.colorId " +
-            "WHERE phones.id = ?";
+    private static final String GET_PHONE_BY_KEY_QUERY = "SELECT * FROM phones WHERE id = ?";
+
+    private static final String GET_COLORS_BY_PHONE_KEY_QUERY = "SELECT * FROM colors " +
+            "INNER JOIN phone2color ON (colors.id = phone2color.colorId AND phone2color.phoneId = ?)";
 
     private static final String UPDATE_PHONE_WITH_ID_QUERY = "UPDATE phones SET brand = ?, model = ?, price = ?, displaySizeInches = ?, " +
             "weightGr = ?, lengthMm = ?, widthMm = ?, heightMm = ?, announced = ?, deviceType = ?, os = ?, displayResolution = ?, " +
@@ -32,10 +32,7 @@ public class JdbcPhoneDao implements PhoneDao {
 
     private static final String MATCH_COLORS_TO_PHONE_QUERY = "INSERT INTO phone2color (phoneId, colorId) VALUES (?, ?)";
 
-    private static final String GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY = "SELECT phones.*, colors.id AS colorId, colors.code AS colorCode FROM phones " +
-            "LEFT JOIN phone2color ON phones.id = phone2color.phoneId " +
-            "LEFT JOIN colors ON colors.id = phone2color.colorId " +
-            "OFFSET ? LIMIT ?";
+    private static final String GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY = "SELECT * FROM phones OFFSET ? LIMIT ?";
 
 
     @Resource
@@ -46,17 +43,25 @@ public class JdbcPhoneDao implements PhoneDao {
 
 
     public Optional<Phone> get(final Long key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Key must not be null");
-        }
+        Objects.requireNonNull(key, "Key must not be null");
 
-        List<Phone> phones = jdbcTemplate.query(GET_PHONE_BY_KEY_QUERY, new PhoneResultSetExtractor(), key);
+        Phone phone;
 
-        if (phones.isEmpty()) {
+        try {
+            phone = jdbcTemplate.queryForObject(GET_PHONE_BY_KEY_QUERY, new BeanPropertyRowMapper<>(Phone.class), key);
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
 
-        return Optional.of(phones.get(0));
+        phone.setColors(extractColors(key));
+
+        return Optional.of(phone);
+    }
+
+    private Set<Color> extractColors(final Long key) {
+        List<Color> colorList = jdbcTemplate.query(GET_COLORS_BY_PHONE_KEY_QUERY, new BeanPropertyRowMapper<>(Color.class), key);
+
+        return new HashSet<>(colorList);
     }
 
 
@@ -114,7 +119,10 @@ public class JdbcPhoneDao implements PhoneDao {
 
 
     public List<Phone> findAll(int offset, int limit) {
-        List<Phone> phones = jdbcTemplate.query(GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY, new PhoneResultSetExtractor(), offset, limit);
+        List<Phone> phones = jdbcTemplate.query(GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY,
+                new BeanPropertyRowMapper<>(Phone.class), offset, limit);
+
+        phones.forEach(phone -> phone.setColors(extractColors(phone.getId())));
 
         return phones;
     }

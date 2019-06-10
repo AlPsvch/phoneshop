@@ -16,7 +16,8 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:resources/context/applicationContext-core-test.xml")
+@ContextConfiguration(locations = "classpath:context/applicationContext-core-test.xml")
+@Transactional
 public class JdbcPhoneDaoIntTest {
 
     private static final String PHONE_BRAND_1 = "Samsung";
@@ -61,7 +62,6 @@ public class JdbcPhoneDaoIntTest {
 
 
     @Test
-    @Transactional
     public void testSave() {
         phoneDao.save(phone1);
 
@@ -73,7 +73,6 @@ public class JdbcPhoneDaoIntTest {
 
 
     @Test
-    @Transactional
     public void testGet() {
         phoneDao.save(phone1);
 
@@ -90,7 +89,7 @@ public class JdbcPhoneDaoIntTest {
     }
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testGetWithNullKey() {
         Long key = null;
 
@@ -99,7 +98,6 @@ public class JdbcPhoneDaoIntTest {
 
 
     @Test
-    @Transactional
     public void testFindAll() {
         phoneDao.save(phone1);
 
@@ -125,7 +123,6 @@ public class JdbcPhoneDaoIntTest {
 
 
     @Test
-    @Transactional
     public void testSaveWithColors() {
         phone1.setColors(colorSet);
 
@@ -141,7 +138,6 @@ public class JdbcPhoneDaoIntTest {
 
 
     @Test
-    @Transactional
     public void testGetWithColors() {
         phone1.setColors(colorSet);
 
@@ -157,7 +153,6 @@ public class JdbcPhoneDaoIntTest {
     }
 
     @Test
-    @Transactional
     public void testUpdate() {
         phone1.setColors(colorSet);
 
