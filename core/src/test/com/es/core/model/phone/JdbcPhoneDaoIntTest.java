@@ -1,11 +1,8 @@
 package com.es.core.model.phone;
 
+import com.es.core.IntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashSet;
@@ -15,10 +12,8 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:context/applicationContext-core-test.xml")
-@Transactional
-public class JdbcPhoneDaoIntTest {
+
+public class JdbcPhoneDaoIntTest extends IntegrationTest {
 
     private static final String PHONE_BRAND_1 = "Samsung";
 

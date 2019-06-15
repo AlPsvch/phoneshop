@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.PreparedStatement;
@@ -58,13 +59,14 @@ public class JdbcPhoneDao implements PhoneDao {
         return Optional.of(phone);
     }
 
+
     private Set<Color> extractColors(final Long key) {
         List<Color> colorList = jdbcTemplate.query(GET_COLORS_BY_PHONE_KEY_QUERY, new BeanPropertyRowMapper<>(Color.class), key);
 
         return new HashSet<>(colorList);
     }
 
-
+    @Transactional
     public void save(final Phone phone) {
         if (phone.getId() == null) {
             addPhone(phone);
