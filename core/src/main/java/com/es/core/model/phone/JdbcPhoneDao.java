@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Component
+@Transactional
 public class JdbcPhoneDao implements PhoneDao {
 
     private static final String GET_PHONE_BY_KEY_QUERY = "SELECT * FROM phones WHERE id = ?";
@@ -42,6 +43,12 @@ public class JdbcPhoneDao implements PhoneDao {
     @Resource
     private SimpleJdbcInsert phoneJdbcInsert;
 
+    @Resource
+    private BeanPropertyRowMapper<Phone> phoneBeanPropertyRowMapper;
+
+    @Resource
+    private BeanPropertyRowMapper<Color> colorBeanPropertyRowMapper;
+
 
     public Optional<Phone> get(final Long key) {
         Objects.requireNonNull(key, "Key must not be null");
@@ -49,7 +56,7 @@ public class JdbcPhoneDao implements PhoneDao {
         Phone phone;
 
         try {
-            phone = jdbcTemplate.queryForObject(GET_PHONE_BY_KEY_QUERY, new BeanPropertyRowMapper<>(Phone.class), key);
+            phone = jdbcTemplate.queryForObject(GET_PHONE_BY_KEY_QUERY, phoneBeanPropertyRowMapper, key);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -61,12 +68,12 @@ public class JdbcPhoneDao implements PhoneDao {
 
 
     private Set<Color> extractColors(final Long key) {
-        List<Color> colorList = jdbcTemplate.query(GET_COLORS_BY_PHONE_KEY_QUERY, new BeanPropertyRowMapper<>(Color.class), key);
+        List<Color> colorList = jdbcTemplate.query(GET_COLORS_BY_PHONE_KEY_QUERY, colorBeanPropertyRowMapper, key);
 
         return new HashSet<>(colorList);
     }
 
-    @Transactional
+
     public void save(final Phone phone) {
         if (phone.getId() == null) {
             addPhone(phone);
@@ -122,7 +129,7 @@ public class JdbcPhoneDao implements PhoneDao {
 
     public List<Phone> findAll(int offset, int limit) {
         List<Phone> phones = jdbcTemplate.query(GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY,
-                new BeanPropertyRowMapper<>(Phone.class), offset, limit);
+                phoneBeanPropertyRowMapper, offset, limit);
 
         phones.forEach(phone -> phone.setColors(extractColors(phone.getId())));
 
