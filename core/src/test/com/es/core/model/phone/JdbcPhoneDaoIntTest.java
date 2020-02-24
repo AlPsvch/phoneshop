@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,8 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
 
     private static final Long NON_EXISTENT_PHONE_ID = 1000L;
 
+    private static final Integer NUMBER_OF_PHONES_IN_TEST_BASE = 2;
+
 
     @Resource
     private PhoneDao phoneDao;
@@ -41,10 +44,12 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
         phone1 = new Phone();
         phone1.setBrand(PHONE_BRAND_1);
         phone1.setModel(PHONE_MODEL_1);
+        phone1.setPrice(BigDecimal.TEN);
 
         phone2 = new Phone();
         phone2.setBrand(PHONE_BRAND_2);
         phone2.setModel(PHONE_MODEL_2);
+        phone2.setPrice(BigDecimal.TEN);
 
         Color black = new Color(1L, "Black");
         Color white = new Color(2L, "White");
@@ -58,12 +63,18 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
 
     @Test
     public void testSave() {
-        phoneDao.save(phone1);
+        phoneDao.save(phone2);
 
-        List<Phone> phones = phoneDao.findAll(0, 10);
+        long phoneId = phone2.getId();
 
-        assertEquals(phone1.getBrand(), phones.get(0).getBrand());
-        assertEquals(phone1.getModel(), phones.get(0).getModel());
+        Optional<Phone> returnedPhoneOptional = phoneDao.get(phoneId);
+
+        assertTrue(returnedPhoneOptional.isPresent());
+
+        Phone returnedPhone = returnedPhoneOptional.get();
+
+        assertEquals(phone2.getBrand(), returnedPhone.getBrand());
+        assertEquals(phone2.getModel(), returnedPhone.getModel());
     }
 
 
@@ -94,18 +105,8 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
 
     @Test
     public void testFindAll() {
-        phoneDao.save(phone1);
-
         List<Phone> phones = phoneDao.findAll(0, 10);
-        assertEquals(1, phones.size());
-
-        phoneDao.save(phone2);
-
-        phones = phoneDao.findAll(0, 10);
         assertEquals(2, phones.size());
-
-        phones = phoneDao.findAll(0, 1);
-        assertEquals(1, phones.size());
     }
 
 
@@ -123,11 +124,15 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
 
         phoneDao.save(phone1);
 
-        List<Phone> phones = phoneDao.findAll(0, 10);
+        long phoneId = phone1.getId();
 
-        assertEquals(1, phones.size());
+        Optional<Phone> returnedPhoneOptional = phoneDao.get(phoneId);
 
-        Set<Color> returnedPhoneColors = phones.get(0).getColors();
+        assertTrue(returnedPhoneOptional.isPresent());
+
+        Phone returnedPhone = returnedPhoneOptional.get();
+
+        Set<Color> returnedPhoneColors = returnedPhone.getColors();
         assertEquals(colorSet.size(), returnedPhoneColors.size());
     }
 
