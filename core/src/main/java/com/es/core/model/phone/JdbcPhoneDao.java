@@ -1,5 +1,6 @@
 package com.es.core.model.phone;
 
+import org.h2.util.StringUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -34,7 +36,8 @@ public class JdbcPhoneDao implements PhoneDao {
 
     private static final String MATCH_COLORS_TO_PHONE_QUERY = "INSERT INTO phone2color (phoneId, colorId) VALUES (?, ?)";
 
-    private static final String GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY = "SELECT * FROM phones OFFSET ? LIMIT ?";
+    private static final String GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY = "SELECT * FROM phones " +
+            "INNER JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock > 0 AND phones.price IS NOT NULL OFFSET ? LIMIT ?";
 
 
     @Resource
@@ -134,5 +137,52 @@ public class JdbcPhoneDao implements PhoneDao {
         phones.forEach(phone -> phone.setColors(extractColors(phone.getId())));
 
         return phones;
+    }
+
+    @Override
+    public List<Phone> findAll(String query, String order, String orderDirection, int offset, int limit) {
+        List<Phone> phones = jdbcTemplate.query(generateOrderQuery(query, order, orderDirection),
+                phoneBeanPropertyRowMapper, offset, limit);
+
+        phones.forEach(phone -> phone.setColors(extractColors(phone.getId())));
+
+        return phones;
+    }
+
+    @Override
+    public int getTotalNumberOfProducts(String query) {
+        return jdbcTemplate.queryForObject(generateQueryToCount(query), Integer.class);
+    }
+
+    private String generateOrderQuery(String query, String order, String orderDirection) {
+        StringBuilder sb = new StringBuilder()
+                .append("SELECT * FROM phones INNER JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock > 0 AND phones.price IS NOT NULL ");
+
+        appendQuery(query, sb);
+
+        sb.append("ORDER BY ").append(order).append(" ").append(orderDirection).append(", ")
+                .append("brand".equalsIgnoreCase(order) ? "model" : "brand").append(" ASC ")
+                .append("OFFSET ? LIMIT ?");
+
+        return sb.toString();
+    }
+
+    private String generateQueryToCount(String query) {
+        StringBuilder sb = new StringBuilder()
+                .append("SELECT COUNT(*) FROM phones INNER JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock > 0 AND phones.price IS NOT NULL ");
+
+        appendQuery(query, sb);
+
+        return sb.toString();
+    }
+
+    private void appendQuery(String query, StringBuilder sb) {
+        if (!StringUtils.isNullOrEmpty(query)) {
+            List<String> queryItems = Arrays.stream(query.trim().split(" "))
+                    .map(item -> "UPPER(phones.model) LIKE '%" + item.toUpperCase() + "%'")
+                    .collect(Collectors.toList());
+
+            sb.append("AND (").append(String.join(" OR ", queryItems)).append(") ");
+        }
     }
 }
