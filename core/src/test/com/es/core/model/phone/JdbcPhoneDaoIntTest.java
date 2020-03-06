@@ -24,9 +24,11 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
 
     private static final String PHONE_MODEL_2 = "Iphone 6";
 
+    private static final Long EXISTENT_PHONE_ID = 101L;
+
     private static final Long NON_EXISTENT_PHONE_ID = 1000L;
 
-    private static final Integer NUMBER_OF_PHONES_IN_TEST_BASE = 2;
+    private static final int NUMBER_OF_PHONES_IN_TEST_BASE = 2;
 
 
     @Resource
@@ -80,18 +82,8 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
 
     @Test
     public void testGet() {
-        phoneDao.save(phone1);
-
-        long phoneId = phone1.getId();
-
-        Optional<Phone> returnedPhoneOptional = phoneDao.get(phoneId);
-
+        Optional<Phone> returnedPhoneOptional = phoneDao.get(EXISTENT_PHONE_ID);
         assertTrue(returnedPhoneOptional.isPresent());
-
-        Phone returnedPhone = returnedPhoneOptional.get();
-
-        assertEquals(phone1.getBrand(), returnedPhone.getBrand());
-        assertEquals(phone1.getModel(), returnedPhone.getModel());
     }
 
 
@@ -106,7 +98,7 @@ public class JdbcPhoneDaoIntTest extends IntegrationTest {
     @Test
     public void testFindAll() {
         List<Phone> phones = phoneDao.findAll(0, 10);
-        assertEquals(2, phones.size());
+        assertEquals(NUMBER_OF_PHONES_IN_TEST_BASE, phones.size());
     }
 
 

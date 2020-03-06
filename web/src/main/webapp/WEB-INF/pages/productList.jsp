@@ -3,6 +3,9 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <tags:page pageTitle="Product List Page">
+  <c:url value="/resources/js/addProdToCart.js" var="addProdToCart"/>
+  <script src=${addProdToCart}></script>
+
   <div class="clearfix" style="margin: 25px 10px 10px;">
     <div class="float-left">Phones</div>
     <div class="float-right">
@@ -31,6 +34,7 @@
         </tr>
         </thead>
         <c:forEach var="phone" items="${phones}">
+          <c:set var="phoneId" value="${phone.id}"/>
           <tr>
             <td>
               <img style="max-height: 200px;"
@@ -46,9 +50,14 @@
             </td>
             <td>${phone.displaySizeInches}"</td>
             <td>${phone.price}$</td>
-            <td><input type="text" class="form-control" placeholder="Quantity"></td>
             <td>
-              <button class="btn btn-outline-dark">Add to cart</button>
+              <input type="text" class="form-control" placeholder="Quantity" name="quantity" id="quantity-${phoneId}" value="1">
+              <span id="quantity-message-${phoneId}" style="display: none"></span>
+            </td>
+            <td>
+              <button class="btn btn-outline-dark"
+                      onclick="addToCart(${phoneId}, '${pageContext.request.contextPath}/ajaxCart')">Add to cart
+              </button>
             </td>
           </tr>
         </c:forEach>

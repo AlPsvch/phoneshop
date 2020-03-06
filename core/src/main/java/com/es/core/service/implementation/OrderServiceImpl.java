@@ -2,7 +2,7 @@ package com.es.core.service.implementation;
 
 import com.es.core.cart.Cart;
 import com.es.core.model.order.Order;
-import com.es.core.order.OutOfStockException;
+import com.es.core.exceptions.OutOfStockException;
 import com.es.core.service.OrderService;
 import org.springframework.stereotype.Service;
 
