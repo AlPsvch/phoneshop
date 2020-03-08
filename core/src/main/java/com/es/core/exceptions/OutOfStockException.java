@@ -1,4 +1,4 @@
 package com.es.core.exceptions;
 
-public class OutOfStockException extends Exception {
+public class OutOfStockException extends RuntimeException {
 }

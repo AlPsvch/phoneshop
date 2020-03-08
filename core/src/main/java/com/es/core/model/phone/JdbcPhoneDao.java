@@ -39,6 +39,12 @@ public class JdbcPhoneDao implements PhoneDao {
     private static final String GET_ALL_PHONES_WITH_OFFSET_AND_LIMIT_QUERY = "SELECT * FROM phones " +
             "INNER JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock > 0 AND phones.price IS NOT NULL OFFSET ? LIMIT ?";
 
+    private static final String GET_ALL_PHONES_QUERY = "SELECT * FROM phones " +
+            "INNER JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock > 0 AND phones.price IS NOT NULL ";
+
+    private static final String GET_COUNT_OF_PHONES_QUERY = "SELECT COUNT(*) FROM phones INNER JOIN stocks ON phones.id = stocks.phoneId " +
+            "WHERE stocks.stock > 0 AND phones.price IS NOT NULL ";
+
 
     @Resource
     private JdbcTemplate jdbcTemplate;
@@ -156,20 +162,20 @@ public class JdbcPhoneDao implements PhoneDao {
 
     private String generateOrderQuery(String query, String order, String orderDirection) {
         StringBuilder sb = new StringBuilder()
-                .append("SELECT * FROM phones INNER JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock > 0 AND phones.price IS NOT NULL ");
+                .append(GET_ALL_PHONES_QUERY);
 
         appendQuery(query, sb);
 
         sb.append("ORDER BY ").append(order).append(" ").append(orderDirection).append(", ")
-                .append("brand".equalsIgnoreCase(order) ? "model" : "brand").append(" ASC ")
-                .append("OFFSET ? LIMIT ?");
+                .append("brand".equalsIgnoreCase(order) ? "model " : "brand ").append(SortingDirection.ASC)
+                .append(" OFFSET ? LIMIT ?");
 
         return sb.toString();
     }
 
     private String generateQueryToCount(String query) {
         StringBuilder sb = new StringBuilder()
-                .append("SELECT COUNT(*) FROM phones INNER JOIN stocks ON phones.id = stocks.phoneId WHERE stocks.stock > 0 AND phones.price IS NOT NULL ");
+                .append(GET_COUNT_OF_PHONES_QUERY);
 
         appendQuery(query, sb);
 

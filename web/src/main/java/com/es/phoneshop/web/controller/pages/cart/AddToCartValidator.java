@@ -16,16 +16,22 @@ public class AddToCartValidator implements Validator {
     public void validate(Object object, Errors errors) {
         AddProductToCartForm addToCartForm = (AddProductToCartForm) object;
 
-        long quantity;
-        try {
-            quantity = Long.parseLong(addToCartForm.getQuantity());
-        } catch (NumberFormatException e) {
+        Long quantity = extractQuantityFromForm(addToCartForm);
+        if (quantity == null) {
             errors.reject("quantity.invalid", "The value must must be a number");
             return;
         }
 
-        if(quantity < 1) {
+        if (quantity < 1) {
             errors.reject("quantity.negative", "The value must greater than 0");
+        }
+    }
+
+    private Long extractQuantityFromForm(AddProductToCartForm toCartForm) {
+        try {
+            return Long.parseLong(toCartForm.getQuantity());
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 }

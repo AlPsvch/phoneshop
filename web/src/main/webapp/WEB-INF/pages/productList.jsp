@@ -16,7 +16,7 @@
   </div>
 
   <c:choose>
-    <c:when test="${phones == null || phones.size() <= 0}">
+    <c:when test="${productPage.phones == null || productPage.phones.size() <= 0}">
       <p><em>Nothing found</em></p>
     </c:when>
     <c:otherwise>
@@ -33,7 +33,7 @@
           <td style="width: 10%">Action</td>
         </tr>
         </thead>
-        <c:forEach var="phone" items="${phones}">
+        <c:forEach var="phone" items="${productPage.phones}">
           <c:set var="phoneId" value="${phone.id}"/>
           <tr>
             <td>
@@ -51,7 +51,8 @@
             <td>${phone.displaySizeInches}"</td>
             <td>${phone.price}$</td>
             <td>
-              <input type="text" class="form-control" placeholder="Quantity" name="quantity" id="quantity-${phoneId}" value="1">
+              <input type="text" class="form-control" placeholder="Quantity" name="quantity" id="quantity-${phoneId}"
+                     value="1">
               <span id="quantity-message-${phoneId}" style="display: none"></span>
             </td>
             <td>
@@ -62,7 +63,7 @@
           </tr>
         </c:forEach>
       </table>
-      <tags:pagination totalNumber="${totalNumOfPages}" currentPage="${currentPage}"/>
+      <tags:pagination totalNumber="${productPage.totalNumOfPages}" currentPage="${productPage.currentPage}"/>
     </c:otherwise>
   </c:choose>
 </tags:page>

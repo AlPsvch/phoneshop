@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,6 +23,9 @@ public class HttpSessionCartService implements CartService {
     @Resource
     private PhoneDao phoneDao;
 
+    @Resource
+    private CartPricingServiceImpl cartPricingService;
+
 
     @Override
     public Cart getCart() {
@@ -31,10 +33,12 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
-    public void addPhone(Long phoneId, Long quantity) throws PhoneNotFoundException {
+    public void addPhone(Long phoneId, Long quantity) {
         Phone phoneToAdd = phoneDao.get(phoneId).orElseThrow(PhoneNotFoundException::new);
 
-        Optional<CartItem> optionalCartItem = cart.getCartItems().stream().filter(ci -> ci.getPhone().getId().equals(phoneId)).findFirst();
+        Optional<CartItem> optionalCartItem = cart.getCartItems().stream()
+                .filter(ci -> ci.getPhone().getId().equals(phoneId))
+                .findFirst();
 
         if (optionalCartItem.isPresent()) {
             CartItem item = optionalCartItem.get();
@@ -44,15 +48,7 @@ public class HttpSessionCartService implements CartService {
             cart.getCartItems().add(item);
         }
 
-        recalculateTotalPrice();
-    }
-
-    private void recalculateTotalPrice() {
-        BigDecimal newTotalPrice = cart.getCartItems().stream()
-                .map(cartItem -> cartItem.getPhone().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
-                .reduce(BigDecimal::add).orElse(BigDecimal.valueOf(0));
-
-        cart.setTotalPrice(newTotalPrice);
+        cartPricingService.recalculateTotalPrice(cart);
     }
 
     @Override
