@@ -7,13 +7,13 @@
 <div class="float-right">
 
   <c:set var="query" value="${productPage.query}"/>
-  <c:set var="orderBy" value="${productPage.orderBy}"/>
-  <c:set var="orderDir" value="${productPage.orderDir}"/>
+  <c:set var="sortBy" value="${productPage.sortBy}"/>
+  <c:set var="sortDirection" value="${productPage.sortDirection}"/>
 
   <ul class="pagination">
     <li class="page-item ${currentPage eq 1 ? "disabled" : ""}">
       <a class="page-link"
-         href="${pageContext.request.contextPath}/productList?<c:if test="${not empty query}">query=${query}&</c:if>orderBy=${orderBy}&orderDir=${orderDir}&page=${currentPage - 1}"
+         href="${pageContext.request.contextPath}/productList?<c:if test="${not empty query}">query=${query}&</c:if>sortBy=${sortBy}&sortDirection=${sortDirection}&page=${currentPage - 1}"
          aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
         <span class="sr-only">Previous</span>
@@ -27,13 +27,13 @@
     <c:forEach var="i" begin="${startPage}" end="${endPage}">
       <li class="page-item ${i eq currentPage ? "active" : ""}">
         <a class="page-link"
-           href="${pageContext.request.contextPath}/productList?<c:if test="${not empty query}">query=${query}&</c:if>orderBy=${orderBy}&orderDir=${orderDir}&page=${i}">${i}</a>
+           href="${pageContext.request.contextPath}/productList?<c:if test="${not empty query}">query=${query}&</c:if>sortBy=${sortBy}&sortDirection=${sortDirection}&page=${i}">${i}</a>
       </li>
     </c:forEach>
 
     <li class="page-item ${currentPage eq totalNumber ? "disabled" : ""}">
       <a class="page-link"
-         href="${pageContext.request.contextPath}/productList?<c:if test="${not empty query}">query=${query}&</c:if>orderBy=${orderBy}&orderDir=${orderDir}&page=${currentPage + 1}"
+         href="${pageContext.request.contextPath}/productList?<c:if test="${not empty query}">query=${query}&</c:if>sortBy=${sortBy}&sortDirection=${sortDirection}&page=${currentPage + 1}"
          aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
         <span class="sr-only">Next</span>

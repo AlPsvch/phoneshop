@@ -5,8 +5,8 @@ import java.util.List;
 public class ProductPage {
 
     private List<Phone> phones;
-    private String orderBy;
-    private String orderDir;
+    private String sortBy;
+    private SortingDirection sortDirection;
     private String query;
     private Integer totalNumOfPages;
     private Integer currentPage;
@@ -15,17 +15,17 @@ public class ProductPage {
     public ProductPage() {
     }
 
-    public ProductPage(String orderBy, String orderDir, String query, Integer currentPage) {
-        this.orderBy = orderBy;
-        this.orderDir = orderDir;
+    public ProductPage(String sortBy, SortingDirection sortDirection, String query, Integer currentPage) {
+        this.sortBy = sortBy;
+        this.sortDirection = sortDirection;
         this.query = query;
         this.currentPage = currentPage;
     }
 
-    public ProductPage(List<Phone> phones, String orderBy, String orderDir, String query, Integer totalNumOfPages, Integer currentPage) {
+    public ProductPage(List<Phone> phones, String sortBy, SortingDirection sortDirection, String query, Integer totalNumOfPages, Integer currentPage) {
         this.phones = phones;
-        this.orderBy = orderBy;
-        this.orderDir = orderDir;
+        this.sortBy = sortBy;
+        this.sortDirection = sortDirection;
         this.query = query;
         this.totalNumOfPages = totalNumOfPages;
         this.currentPage = currentPage;
@@ -39,20 +39,20 @@ public class ProductPage {
         this.phones = phones;
     }
 
-    public String getOrderBy() {
-        return orderBy;
+    public String getSortBy() {
+        return sortBy;
     }
 
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
+    public void setSortBy(String sortBy) {
+        this.sortBy = sortBy;
     }
 
-    public String getOrderDir() {
-        return orderDir;
+    public SortingDirection getSortDirection() {
+        return sortDirection;
     }
 
-    public void setOrderDir(String orderDir) {
-        this.orderDir = orderDir;
+    public void setSortDirection(SortingDirection sortDirection) {
+        this.sortDirection = sortDirection;
     }
 
     public String getQuery() {

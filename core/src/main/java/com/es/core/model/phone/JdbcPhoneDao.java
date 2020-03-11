@@ -146,8 +146,8 @@ public class JdbcPhoneDao implements PhoneDao {
     }
 
     @Override
-    public List<Phone> findAll(String query, String order, String orderDirection, int offset, int limit) {
-        List<Phone> phones = jdbcTemplate.query(generateOrderQuery(query, order, orderDirection),
+    public List<Phone> findAll(String query, String sortBy, SortingDirection sortingDirection, int offset, int limit) {
+        List<Phone> phones = jdbcTemplate.query(generateOrderQuery(query, sortBy, sortingDirection),
                 phoneBeanPropertyRowMapper, offset, limit);
 
         phones.forEach(phone -> phone.setColors(extractColors(phone.getId())));
@@ -160,14 +160,14 @@ public class JdbcPhoneDao implements PhoneDao {
         return jdbcTemplate.queryForObject(generateQueryToCount(query), Integer.class);
     }
 
-    private String generateOrderQuery(String query, String order, String orderDirection) {
+    private String generateOrderQuery(String query, String sortBy, SortingDirection sortingDirection) {
         StringBuilder sb = new StringBuilder()
                 .append(GET_ALL_PHONES_QUERY);
 
         appendQuery(query, sb);
 
-        sb.append("ORDER BY ").append(order).append(" ").append(orderDirection).append(", ")
-                .append("brand".equalsIgnoreCase(order) ? "model " : "brand ").append(SortingDirection.ASC)
+        sb.append("ORDER BY ").append(sortBy).append(" ").append(sortingDirection).append(", ")
+                .append("brand".equalsIgnoreCase(sortBy) ? "model " : "brand ").append(SortingDirection.ASC)
                 .append(" OFFSET ? LIMIT ?");
 
         return sb.toString();

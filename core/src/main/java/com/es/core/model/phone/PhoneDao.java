@@ -11,7 +11,7 @@ public interface PhoneDao {
 
     List<Phone> findAll(int offset, int limit);
 
-    List<Phone> findAll(String query, String order, String orderDirection, int offset, int limit);
+    List<Phone> findAll(String query, String order, SortingDirection sortingDirection, int offset, int limit);
 
     int getTotalNumberOfProducts(String query);
 

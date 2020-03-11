@@ -24,11 +24,11 @@
         <thead>
         <tr>
           <td style="width: 20%">Image</td>
-          <td style="width: 13%"><tags:sortingHeader headerName="Brand" orderByLabel="brand"/></td>
-          <td style="width: 13%"><tags:sortingHeader headerName="Model" orderByLabel="model"/></td>
+          <td style="width: 13%"><tags:sortingHeader headerName="Brand" sortByLabel="brand"/></td>
+          <td style="width: 13%"><tags:sortingHeader headerName="Model" sortByLabel="model"/></td>
           <td style="width: 14%">Color</td>
-          <td style="width: 10%"><tags:sortingHeader headerName="Display size" orderByLabel="displaySizeInches"/></td>
-          <td style="width: 10%"><tags:sortingHeader headerName="Price" orderByLabel="price"/></td>
+          <td style="width: 10%"><tags:sortingHeader headerName="Display size" sortByLabel="displaySizeInches"/></td>
+          <td style="width: 10%"><tags:sortingHeader headerName="Price" sortByLabel="price"/></td>
           <td style="width: 10%">Quantity</td>
           <td style="width: 10%">Action</td>
         </tr>

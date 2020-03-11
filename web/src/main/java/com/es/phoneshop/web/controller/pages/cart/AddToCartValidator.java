@@ -16,6 +16,10 @@ public class AddToCartValidator implements Validator {
     public void validate(Object object, Errors errors) {
         AddProductToCartForm addToCartForm = (AddProductToCartForm) object;
 
+        validateQuantity(addToCartForm, errors);
+    }
+
+    private void validateQuantity(AddProductToCartForm addToCartForm, Errors errors) {
         Long quantity = extractQuantityFromForm(addToCartForm);
         if (quantity == null) {
             errors.reject("quantity.invalid", "The value must must be a number");

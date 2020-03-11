@@ -11,6 +11,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.xml.bind.ValidationException;
 
 @Controller
 @RequestMapping(value = "/ajaxCart")
@@ -36,14 +37,18 @@ public class AjaxCartController {
     @PostMapping
     public @ResponseBody
     AddToCartResponseForm addPhone(@RequestBody @Validated AddProductToCartForm addToCartForm, BindingResult bindingResult) {
-        if (!bindingResult.hasErrors()) {
-            try {
-                cartService.addPhone(addToCartForm.getPhoneId(), Long.valueOf(addToCartForm.getQuantity()));
-            } catch (Exception e) {
-                return new AddToCartResponseForm(ERROR_STATUS, ERROR_ADDING_TO_CART);
+        try {
+            if (bindingResult.hasErrors()) {
+                throw new ValidationException(bindingResult.getAllErrors().get(0).getDefaultMessage());
             }
+
+            cartService.addPhone(addToCartForm.getPhoneId(), Long.valueOf(addToCartForm.getQuantity()));
+
             return new AddToCartResponseForm(OK_STATUS, SUCCESSFULLY_ADDED);
+        } catch (ValidationException e) {
+            return new AddToCartResponseForm(ERROR_STATUS, e.getMessage());
+        } catch (Exception e) {
+            return new AddToCartResponseForm(ERROR_STATUS, ERROR_ADDING_TO_CART);
         }
-        return new AddToCartResponseForm(ERROR_STATUS, bindingResult.getAllErrors().get(0).getDefaultMessage());
     }
 }

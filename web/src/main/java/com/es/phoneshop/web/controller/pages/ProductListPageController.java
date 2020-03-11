@@ -1,5 +1,6 @@
 package com.es.phoneshop.web.controller.pages;
 
+import com.es.core.model.phone.SortingDirection;
 import com.es.core.service.PhonePagingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,12 +28,12 @@ public class ProductListPageController {
 
 
     @GetMapping
-    public String showProductList(@RequestParam(defaultValue = DEFAULT_ORDER_VALUE) String orderBy,
-                                  @RequestParam(defaultValue = DEFAULT_ORDER_DIRECTION) String orderDir,
+    public String showProductList(@RequestParam(defaultValue = DEFAULT_ORDER_VALUE) String sortBy,
+                                  @RequestParam(defaultValue = DEFAULT_ORDER_DIRECTION) SortingDirection sortDirection,
                                   @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER) Integer page,
                                   @RequestParam(required = false) String query,
                                   Model model) {
-        model.addAttribute(PRODUCT_PAGE_ATTRIBUTE, phonePagingService.formProductPage(query, orderBy, orderDir, page));
+        model.addAttribute(PRODUCT_PAGE_ATTRIBUTE, phonePagingService.formProductPage(query, sortBy, sortDirection, page));
         return "productList";
     }
 }
