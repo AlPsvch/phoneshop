@@ -1,6 +1,7 @@
 function addToCart(phoneId, url) {
-    $.post({
+    $.ajax({
         url: url,
+        type: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -9,12 +10,18 @@ function addToCart(phoneId, url) {
             phoneId: phoneId,
             quantity: $('#quantity-' + phoneId).val()
         }),
-        dataType: 'json',
         success: function (response) {
-            let responseMessage = $('#quantity-message-' + phoneId);
-            responseMessage.text(response['message']);
-            responseMessage.css("color", response['status'] === 'ok' ? "green" : "red");
-            responseMessage.show();
+            showAddToCartResponse('ok', 'Successfully added to cart', phoneId);
+        },
+        error: function (errorResponse) {
+            showAddToCartResponse('error', errorResponse.responseText, phoneId);
         }
     })
+}
+
+function showAddToCartResponse(status, message, phoneId) {
+    let responseMessage = $('#quantity-message-' + phoneId);
+    responseMessage.text(message);
+    responseMessage.css("color", 'ok' === status ? "green" : "red");
+    responseMessage.show();
 }
