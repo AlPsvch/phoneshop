@@ -1,6 +1,5 @@
 package com.es.phoneshop.web.controller;
 
-import com.es.core.exceptions.PhoneNotFoundException;
 import com.es.core.service.CartService;
 import com.es.phoneshop.web.controller.pages.cart.AddProductToCartForm;
 import com.es.phoneshop.web.controller.pages.cart.AddToCartValidator;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.xml.bind.ValidationException;
 
 @Controller
 @RequestMapping(value = "/ajaxCart")
@@ -34,9 +34,9 @@ public class AjaxCartController {
 
     @PostMapping
     public @ResponseBody
-    ResponseEntity<String> addPhone(@RequestBody @Validated AddProductToCartForm addToCartForm, BindingResult bindingResult) {
+    ResponseEntity<String> addPhone(@RequestBody @Validated AddProductToCartForm addToCartForm, BindingResult bindingResult) throws ValidationException {
         if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors().get(0).getDefaultMessage());
+            throw new ValidationException(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         cartService.addPhone(addToCartForm.getPhoneId(), Long.valueOf(addToCartForm.getQuantity()));
         return ResponseEntity.ok().build();
