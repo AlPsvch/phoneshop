@@ -25,7 +25,7 @@ public class AjaxCartController {
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
-        binder.setValidator(addToCartValidator);
+        binder.addValidators(addToCartValidator);
     }
 
 

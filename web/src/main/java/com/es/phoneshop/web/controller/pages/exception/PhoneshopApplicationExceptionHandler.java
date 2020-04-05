@@ -1,6 +1,7 @@
 package com.es.phoneshop.web.controller.pages.exception;
 
 import com.es.core.exceptions.DataValidationException;
+import com.es.core.exceptions.OutOfStockException;
 import com.es.core.exceptions.PhoneNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,5 +19,10 @@ public class PhoneshopApplicationExceptionHandler extends ResponseEntityExceptio
     @ExceptionHandler(DataValidationException.class)
     protected ResponseEntity<String> handleDataValidationException(DataValidationException e) {
         return ResponseEntity.badRequest().body(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    }
+
+    @ExceptionHandler(OutOfStockException.class)
+    protected ResponseEntity<String> handleOutOfStockException(OutOfStockException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

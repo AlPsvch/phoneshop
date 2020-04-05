@@ -1,11 +1,18 @@
 package com.es.phoneshop.web.controller.pages.cart;
 
+import com.es.core.model.phone.PhoneDao;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import javax.annotation.Resource;
+
 @Component
 public class AddToCartValidator implements Validator {
+
+    @Resource
+    private PhoneDao phoneDao;
+
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -25,9 +32,11 @@ public class AddToCartValidator implements Validator {
             errors.reject("quantity.invalid", "The value must must be a number");
             return;
         }
-
         if (quantity < 1) {
             errors.reject("quantity.negative", "The value must greater than 0");
+        }
+        if (!phoneDao.hasEnoughStock(addToCartForm.getPhoneId(), quantity)) {
+            errors.reject("quantity.not.available", "Not enough stock for this product");
         }
     }
 

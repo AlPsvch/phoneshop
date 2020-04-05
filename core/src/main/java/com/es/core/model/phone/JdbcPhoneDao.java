@@ -45,6 +45,11 @@ public class JdbcPhoneDao implements PhoneDao {
     private static final String GET_COUNT_OF_PHONES_QUERY = "SELECT COUNT(*) FROM phones INNER JOIN stocks ON phones.id = stocks.phoneId " +
             "WHERE stocks.stock > 0 AND phones.price IS NOT NULL ";
 
+    private static final String GET_PHONE_STOCK_QUERY = "SELECT stock FROM stocks WHERE phoneId = ?";
+
+    private static final String UPDATE_PHONE_STOCK_QUERY = "UPDATE stocks SET stock = (" + GET_PHONE_STOCK_QUERY + " - ?) " +
+            "WHERE phoneId = ?";
+
 
     @Resource
     private JdbcTemplate jdbcTemplate;
@@ -190,5 +195,20 @@ public class JdbcPhoneDao implements PhoneDao {
 
             sb.append("AND (").append(String.join(" OR ", queryItems)).append(") ");
         }
+    }
+
+    @Override
+    public int getNumberOfAvailableProducts(Long id) {
+        return jdbcTemplate.queryForObject(GET_PHONE_STOCK_QUERY, new Object[]{id}, Integer.class);
+    }
+
+    @Override
+    public void reduceNumberOfAvailableProducts(Long id, Long quantity) {
+        jdbcTemplate.update(UPDATE_PHONE_STOCK_QUERY, id, quantity, id);
+    }
+
+    @Override
+    public boolean hasEnoughStock(Long id, Long quantity) {
+        return quantity <= getNumberOfAvailableProducts(id);
     }
 }

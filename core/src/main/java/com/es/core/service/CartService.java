@@ -18,4 +18,6 @@ public interface CartService {
     void update(Map<Long, Long> items);
 
     void remove(Long phoneId);
+
+    Map<Long, Long> formMapForUpdate(Map<Long, String> cartItems);
 }

@@ -24,7 +24,7 @@
     </div>
     <div class="float-right">
       <a href="#">Login</a><br>
-      <a href="#" class="btn btn-outline-dark">Cart</a>
+      <a href="${pageContext.request.contextPath}/cart" class="btn btn-outline-dark">Cart</a>
     </div>
   </div>
   <hr>

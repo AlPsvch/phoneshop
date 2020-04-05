@@ -15,4 +15,9 @@ public interface PhoneDao {
 
     int getTotalNumberOfProducts(String query);
 
+    int getNumberOfAvailableProducts(Long id);
+
+    void reduceNumberOfAvailableProducts(Long id, Long quantity);
+
+    boolean hasEnoughStock(Long id, Long quantity);
 }
