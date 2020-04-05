@@ -11,6 +11,7 @@ function addToCart(phoneId, url) {
             quantity: $('#quantity-' + phoneId).val()
         }),
         success: function (response) {
+            updateMiniCart();
             showAddToCartResponse('ok', 'Successfully added to cart', phoneId);
         },
         error: function (errorResponse) {

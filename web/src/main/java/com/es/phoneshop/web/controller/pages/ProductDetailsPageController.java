@@ -1,6 +1,7 @@
 package com.es.phoneshop.web.controller.pages;
 
 import com.es.core.model.phone.Phone;
+import com.es.core.service.CartService;
 import com.es.core.service.PhonePagingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +21,15 @@ public class ProductDetailsPageController {
     @Resource
     private PhonePagingService phonePagingService;
 
+    @Resource
+    private CartService cartService;
+
 
     @GetMapping(value = "/{id}")
     public String showPhone(@PathVariable Long id, Model model) {
         Optional<Phone> phoneOptional = phonePagingService.getPhone(id);
         phoneOptional.ifPresent(phone -> model.addAttribute(PHONE, phone));
+        cartService.insertMiniCart(model);
         return "productDetails";
     }
 }

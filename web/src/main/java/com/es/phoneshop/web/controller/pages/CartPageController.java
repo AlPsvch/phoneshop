@@ -36,6 +36,7 @@ public class CartPageController {
     @GetMapping
     public String getCart(Model model) {
         model.addAttribute(CART, cartService.getCart());
+        cartService.insertMiniCart(model);
         if (!model.containsAttribute(CART_ITEMS_UPDATE_ATTRIBUTE)) {
             model.addAttribute(CART_ITEMS_UPDATE_ATTRIBUTE, new CartItemsUpdateForm());
         }
@@ -55,16 +56,13 @@ public class CartPageController {
         }
 
         model.addAttribute(CART, cartService.getCart());
+        cartService.insertMiniCart(model);
         return "cartPage";
     }
 
     @DeleteMapping("/{id}")
     public String deleteItem(@PathVariable Long id, Model model) {
         cartService.remove(id);
-        model.addAttribute(CART, cartService.getCart());
-        if (!model.containsAttribute(CART_ITEMS_UPDATE_ATTRIBUTE)) {
-            model.addAttribute(CART_ITEMS_UPDATE_ATTRIBUTE, new CartItemsUpdateForm());
-        }
-        return "cartPage";
+        return "redirect:/cart";
     }
 }

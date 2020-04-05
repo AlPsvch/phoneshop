@@ -2,6 +2,7 @@ package com.es.core.service.implementation;
 
 import com.es.core.cart.Cart;
 import com.es.core.cart.CartItem;
+import com.es.core.cart.MiniCart;
 import com.es.core.exceptions.OutOfStockException;
 import com.es.core.exceptions.PhoneNotFoundException;
 import com.es.core.model.phone.Phone;
@@ -9,6 +10,7 @@ import com.es.core.model.phone.PhoneDao;
 import com.es.core.service.CartService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -18,6 +20,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class HttpSessionCartService implements CartService {
+
+    private static final String MINI_CART = "miniCart";
 
     @Resource
     private Cart cart;
@@ -80,5 +84,19 @@ public class HttpSessionCartService implements CartService {
         Map<Long, Long> mapForUpdate = new HashMap<>();
         cartItems.forEach((key, value) -> mapForUpdate.put(key, Long.valueOf(value)));
         return mapForUpdate;
+    }
+
+    @Override
+    public void insertMiniCart(Model model) {
+        MiniCart miniCart = new MiniCart(getCartTotalProductsCount(), cart.getTotalPrice());
+        model.addAttribute(MINI_CART, miniCart);
+    }
+
+    private Long getCartTotalProductsCount() {
+        Long totalCount = 0L;
+        for (CartItem cartItem : cart.getCartItems()) {
+            totalCount += cartItem.getQuantity();
+        }
+        return totalCount;
     }
 }
