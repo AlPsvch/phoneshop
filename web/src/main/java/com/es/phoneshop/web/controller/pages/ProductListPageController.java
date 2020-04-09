@@ -17,6 +17,8 @@ public class ProductListPageController {
 
     private static final String PRODUCT_PAGE_ATTRIBUTE = "productPage";
 
+    private static final String MINI_CART_ATTRIBUTE = "miniCart";
+
     private static final String DEFAULT_ORDER_VALUE = "brand";
 
     private static final String DEFAULT_ORDER_DIRECTION = "ASC";
@@ -38,7 +40,7 @@ public class ProductListPageController {
                                   @RequestParam(required = false) String query,
                                   Model model) {
         model.addAttribute(PRODUCT_PAGE_ATTRIBUTE, phonePagingService.formProductPage(query, sortBy, sortDirection, page));
-        cartService.insertMiniCart(model);
+        model.addAttribute(MINI_CART_ATTRIBUTE, cartService.getMiniCart());
         return "productList";
     }
 }

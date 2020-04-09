@@ -8,9 +8,9 @@ import com.es.core.exceptions.PhoneNotFoundException;
 import com.es.core.model.phone.Phone;
 import com.es.core.model.phone.PhoneDao;
 import com.es.core.service.CartService;
+import com.es.core.service.PhoneStockService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -21,7 +21,6 @@ import java.util.Optional;
 @Transactional
 public class HttpSessionCartService implements CartService {
 
-    private static final String MINI_CART = "miniCart";
 
     @Resource
     private Cart cart;
@@ -31,6 +30,9 @@ public class HttpSessionCartService implements CartService {
 
     @Resource
     private CartPricingServiceImpl cartPricingService;
+
+    @Resource
+    private PhoneStockService phoneStockService;
 
 
     @Override
@@ -42,20 +44,17 @@ public class HttpSessionCartService implements CartService {
     public void addPhone(Long phoneId, Long quantity) {
         Phone phoneToAdd = phoneDao.get(phoneId).orElseThrow(PhoneNotFoundException::new);
 
-        Optional<CartItem> optionalCartItem = cart.getCartItems().stream()
+        Long currentQuantity = cart.getCartItems().stream()
                 .filter(ci -> ci.getPhone().getId().equals(phoneId))
-                .findFirst();
+                .findFirst().map(CartItem::getQuantity).orElse(0L);
 
-        boolean cartItemPresents = optionalCartItem.isPresent();
-
-        long currentQuantity = cartItemPresents ? optionalCartItem.get().getQuantity() : 0;
-        if (!phoneDao.hasEnoughStock(phoneId, currentQuantity + quantity)) {
+        if (!phoneStockService.hasEnoughStock(phoneId, currentQuantity + quantity)) {
             throw new OutOfStockException();
         }
 
-        if (cartItemPresents) {
-            CartItem item = optionalCartItem.get();
-            item.setQuantity(currentQuantity + quantity);
+        if (currentQuantity != 0L) {
+            cart.getCartItems().stream().filter(cartItem -> cartItem.getPhone().getId().equals(phoneId))
+                    .findFirst().ifPresent(cartItem -> cartItem.setQuantity(currentQuantity + quantity));
         } else {
             CartItem item = new CartItem(phoneToAdd, quantity);
             cart.getCartItems().add(item);
@@ -87,17 +86,12 @@ public class HttpSessionCartService implements CartService {
     }
 
     @Override
-    public void insertMiniCart(Model model) {
-        MiniCart miniCart = new MiniCart(getCartTotalProductsCount(), cart.getTotalPrice());
-        model.addAttribute(MINI_CART, miniCart);
+    public MiniCart getMiniCart() {
+        return new MiniCart(getCartTotalProductsCount(), cart.getTotalPrice());
     }
 
     private Long getCartTotalProductsCount() {
-        Long totalCount = 0L;
-        for (CartItem cartItem : cart.getCartItems()) {
-            totalCount += cartItem.getQuantity();
-        }
-        return totalCount;
+        return cart.getCartItems().stream().mapToLong(CartItem::getQuantity).sum();
     }
 
     public void setCart(Cart cart) {
@@ -110,5 +104,9 @@ public class HttpSessionCartService implements CartService {
 
     public void setCartPricingService(CartPricingServiceImpl cartPricingService) {
         this.cartPricingService = cartPricingService;
+    }
+
+    public void setPhoneStockService(PhoneStockService phoneStockService) {
+        this.phoneStockService = phoneStockService;
     }
 }

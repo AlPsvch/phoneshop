@@ -18,6 +18,8 @@ public class ProductDetailsPageController {
 
     private static final String PHONE = "phone";
 
+    private static final String MINI_CART_ATTRIBUTE = "miniCart";
+
     @Resource
     private PhonePagingService phonePagingService;
 
@@ -29,7 +31,7 @@ public class ProductDetailsPageController {
     public String showPhone(@PathVariable Long id, Model model) {
         Optional<Phone> phoneOptional = phonePagingService.getPhone(id);
         phoneOptional.ifPresent(phone -> model.addAttribute(PHONE, phone));
-        cartService.insertMiniCart(model);
+        model.addAttribute(MINI_CART_ATTRIBUTE, cartService.getMiniCart());
         return "productDetails";
     }
 }

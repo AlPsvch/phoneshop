@@ -5,8 +5,10 @@ import com.es.core.cart.Cart;
 import com.es.core.model.phone.JdbcPhoneDao;
 import com.es.core.model.phone.Phone;
 import com.es.core.model.phone.PhoneDao;
+import com.es.core.model.stock.JdbcStockDao;
 import com.es.core.service.implementation.CartPricingServiceImpl;
 import com.es.core.service.implementation.HttpSessionCartService;
+import com.es.core.service.implementation.PhoneStockServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,10 +36,12 @@ public class HttpSessionCartServiceTest extends IntegrationTest {
         HttpSessionCartService cartService = new HttpSessionCartService();
         CartPricingServiceImpl cartPricingService = new CartPricingServiceImpl();
         PhoneDao phoneDao = mock(JdbcPhoneDao.class);
+        PhoneStockService stockService = mock(PhoneStockServiceImpl.class);
 
         cartService.setCart(cart);
         cartService.setCartPricingService(cartPricingService);
         cartService.setPhoneDao(phoneDao);
+        cartService.setPhoneStockService(stockService);
 
         Phone phone1 = new Phone();
         Phone phone2 = new Phone();
@@ -50,7 +54,7 @@ public class HttpSessionCartServiceTest extends IntegrationTest {
 
         when(phoneDao.get(1L)).thenReturn(Optional.of(phone1));
         when(phoneDao.get(2L)).thenReturn(Optional.of(phone2));
-        when(phoneDao.hasEnoughStock(any(), any())).thenReturn(Boolean.TRUE);
+        when(stockService.hasEnoughStock(any(), any())).thenReturn(Boolean.TRUE);
 
         cartService.addPhone(PHONE_1_ID, PHONE_1_QUANTITY);
         cartService.addPhone(PHONE_2_ID, PHONE_2_QUANTITY);

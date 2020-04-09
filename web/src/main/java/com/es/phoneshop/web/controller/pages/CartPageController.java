@@ -18,6 +18,7 @@ import java.util.Map;
 public class CartPageController {
 
     private static final String CART = "cart";
+    private static final String MINI_CART_ATTRIBUTE = "miniCart";
     private static final String CART_ITEMS_UPDATE_ATTRIBUTE = "cartItemsUpdateForm";
     private static final String CONTAIN_ERRORS = "containErrors";
 
@@ -27,7 +28,7 @@ public class CartPageController {
     @Resource
     private CartUpdateValidator cartUpdateValidator;
 
-    @InitBinder
+    @InitBinder("cartItemsUpdateForm")
     protected void initBinder(WebDataBinder binder) {
         binder.addValidators(cartUpdateValidator);
     }
@@ -35,11 +36,9 @@ public class CartPageController {
 
     @GetMapping
     public String getCart(Model model) {
+        model.addAttribute(CART_ITEMS_UPDATE_ATTRIBUTE, new CartItemsUpdateForm());
         model.addAttribute(CART, cartService.getCart());
-        cartService.insertMiniCart(model);
-        if (!model.containsAttribute(CART_ITEMS_UPDATE_ATTRIBUTE)) {
-            model.addAttribute(CART_ITEMS_UPDATE_ATTRIBUTE, new CartItemsUpdateForm());
-        }
+        model.addAttribute(MINI_CART_ATTRIBUTE, cartService.getMiniCart());
         return "cartPage";
     }
 
@@ -56,7 +55,7 @@ public class CartPageController {
         }
 
         model.addAttribute(CART, cartService.getCart());
-        cartService.insertMiniCart(model);
+        model.addAttribute(MINI_CART_ATTRIBUTE, cartService.getMiniCart());
         return "cartPage";
     }
 

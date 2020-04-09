@@ -1,6 +1,6 @@
 package com.es.phoneshop.web.controller.pages.cart;
 
-import com.es.core.model.phone.PhoneDao;
+import com.es.core.service.PhoneStockService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 public class AddToCartValidator implements Validator {
 
     @Resource
-    private PhoneDao phoneDao;
+    private PhoneStockService stockService;
 
 
     @Override
@@ -35,7 +35,7 @@ public class AddToCartValidator implements Validator {
         if (quantity < 1) {
             errors.reject("quantity.negative", "The value must greater than 0");
         }
-        if (!phoneDao.hasEnoughStock(addToCartForm.getPhoneId(), quantity)) {
+        if (!stockService.hasEnoughStock(addToCartForm.getPhoneId(), quantity)) {
             errors.reject("quantity.not.available", "Not enough stock for this product");
         }
     }
