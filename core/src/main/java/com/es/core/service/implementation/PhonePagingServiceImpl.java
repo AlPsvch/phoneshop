@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PhonePagingServiceImpl implements PhonePagingService {
@@ -27,6 +28,10 @@ public class PhonePagingServiceImpl implements PhonePagingService {
         return productPage;
     }
 
+    @Override
+    public Optional<Phone> getPhone(Long id) {
+        return phoneDao.get(id);
+    }
 
     private List<Phone> findPhones(String query, String order, SortingDirection sortDirection, int page) {
         return phoneDao.findAll(query, order, sortDirection, (page - 1) * PRODUCTS_TO_DISPLAY_NUMBER, PRODUCTS_TO_DISPLAY_NUMBER);

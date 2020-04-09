@@ -37,8 +37,10 @@
           <c:set var="phoneId" value="${phone.id}"/>
           <tr>
             <td>
-              <img style="max-height: 200px;"
-                   src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${phone.imageUrl}">
+              <a href="${pageContext.request.contextPath}/productDetails/${phoneId}">
+                <img style="max-height: 200px;"
+                     src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${phone.imageUrl}">
+              </a>
             </td>
             <td>${phone.brand}</td>
             <td>${phone.model}</td>
