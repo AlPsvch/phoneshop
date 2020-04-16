@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -88,6 +89,12 @@ public class HttpSessionCartService implements CartService {
     @Override
     public MiniCart getMiniCart() {
         return new MiniCart(getCartTotalProductsCount(), cart.getTotalPrice());
+    }
+
+    @Override
+    public void clearCart() {
+        cart.setTotalPrice(BigDecimal.ZERO);
+        cart.getCartItems().clear();
     }
 
     private Long getCartTotalProductsCount() {

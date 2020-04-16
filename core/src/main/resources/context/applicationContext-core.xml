@@ -32,12 +32,28 @@
         <property name="generatedKeyName" value="id"/>
     </bean>
 
+    <bean id="orderSimpleJdbcInsert" class="org.springframework.jdbc.core.simple.SimpleJdbcInsert">
+        <constructor-arg ref="jdbcTemplate"/>
+        <property name="tableName" value="orders"/>
+        <property name="generatedKeyName" value="orderId"/>
+    </bean>
+
+    <bean id="orderItemSimpleJdbcInsert" class="org.springframework.jdbc.core.simple.SimpleJdbcInsert">
+        <constructor-arg ref="jdbcTemplate"/>
+        <property name="tableName" value="item2order"/>
+        <property name="generatedKeyName" value="id"/>
+    </bean>
+
     <bean id="phoneBeanPropertyRowMapper" class="org.springframework.jdbc.core.BeanPropertyRowMapper">
         <constructor-arg value="com.es.core.model.phone.Phone"/>
     </bean>
 
     <bean id="colorBeanPropertyRowMapper" class="org.springframework.jdbc.core.BeanPropertyRowMapper">
         <constructor-arg value="com.es.core.model.phone.Color"/>
+    </bean>
+
+    <bean id="orderBeanPropertyRowMapper" class="org.springframework.jdbc.core.BeanPropertyRowMapper">
+        <constructor-arg value="com.es.core.model.order.Order"/>
     </bean>
 
     <jdbc:initialize-database enabled="${db.insertSchema}">

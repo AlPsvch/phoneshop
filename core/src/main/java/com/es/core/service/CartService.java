@@ -24,4 +24,6 @@ public interface CartService {
     Map<Long, Long> formMapForUpdate(Map<Long, String> cartItems);
 
     MiniCart getMiniCart();
+
+    void clearCart();
 }

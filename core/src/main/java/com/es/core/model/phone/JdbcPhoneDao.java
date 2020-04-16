@@ -50,7 +50,7 @@ public class JdbcPhoneDao implements PhoneDao {
     private JdbcTemplate jdbcTemplate;
 
     @Resource
-    private SimpleJdbcInsert phoneJdbcInsert;
+    private SimpleJdbcInsert phoneSimpleJdbcInsert;
 
     @Resource
     private BeanPropertyRowMapper<Phone> phoneBeanPropertyRowMapper;
@@ -97,7 +97,7 @@ public class JdbcPhoneDao implements PhoneDao {
     private void addPhone(final Phone phone) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(phone);
 
-        Number id = phoneJdbcInsert.executeAndReturnKey(parameterSource);
+        Number id = phoneSimpleJdbcInsert.executeAndReturnKey(parameterSource);
         phone.setId(id.longValue());
     }
 
