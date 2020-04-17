@@ -14,6 +14,9 @@
     </a>
   </div>
 
+  <c:if test="${outOfStock}">
+    <p><em>Some items from order went out of stock and were removed from your cart</em></p>
+  </c:if><br>
   <c:set var="orderItems" value="${order.orderItems}"/>
   <c:choose>
     <c:when test="${orderItems == null || orderItems.size() <= 0}">
