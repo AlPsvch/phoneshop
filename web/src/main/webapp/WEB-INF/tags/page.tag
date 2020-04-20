@@ -24,9 +24,11 @@
     </div>
     <div class="float-right">
       <a href="#">Login</a><br>
-      <a href="${pageContext.request.contextPath}/cart" class="btn btn-outline-dark">
-        My cart: ${miniCart.totalCount} items ${miniCart.totalPrice}$
-      </a>
+      <c:if test="${miniCart != null}">
+        <a href="${pageContext.request.contextPath}/cart" class="btn btn-outline-dark">
+          My cart: ${miniCart.totalCount} items ${miniCart.subtotalPrice}$
+        </a>
+      </c:if>
     </div>
   </div>
   <hr>

@@ -4,6 +4,6 @@ import com.es.core.cart.Cart;
 
 public interface CartPricingService {
 
-    void recalculateTotalPrice(Cart cart);
+    void recalculateCartPrice(Cart cart);
 
 }

@@ -28,7 +28,7 @@
         <input type="hidden" name="_method" value="POST"/>
         <br><br>
         <div class="float-right">
-          <a href="#" class="btn btn-secondary" style="margin: 10px">Order</a>
+          <a href="${pageContext.request.contextPath}/order" class="btn btn-secondary" style="margin: 10px">Order</a>
         </div>
         <table class="table table-striped table-bordered table-sm" style="text-align: center">
           <thead>
@@ -73,7 +73,8 @@
         </table>
         <div class="float-right" style="margin: 10px">
           <button class="btn btn-outline-secondary" type="submit">Update</button>
-          <a href="#" class="btn btn-secondary">Order</a>
+          <c:url value="/order" var="orderUrl"/>
+          <a href="${orderUrl}" class="btn btn-secondary">Order</a>
         </div>
       </form:form>
     </c:otherwise>

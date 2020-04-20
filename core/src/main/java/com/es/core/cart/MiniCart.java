@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 
 public class MiniCart {
     private Long totalCount;
-    private BigDecimal totalPrice;
+    private BigDecimal subtotalPrice;
 
     public MiniCart() {
     }
 
     public MiniCart(Long totalCount, BigDecimal totalPrice) {
         this.totalCount = totalCount;
-        this.totalPrice = totalPrice;
+        this.subtotalPrice = totalPrice;
     }
 
     public Long getTotalCount() {
@@ -22,11 +22,11 @@ public class MiniCart {
         this.totalCount = totalCount;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public BigDecimal getSubtotalPrice() {
+        return subtotalPrice;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setSubtotalPrice(BigDecimal subtotalPrice) {
+        this.subtotalPrice = subtotalPrice;
     }
 }

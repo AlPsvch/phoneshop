@@ -15,12 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @Transactional
 public class HttpSessionCartService implements CartService {
-
 
     @Resource
     private Cart cart;
@@ -60,7 +58,7 @@ public class HttpSessionCartService implements CartService {
             cart.getCartItems().add(item);
         }
 
-        cartPricingService.recalculateTotalPrice(cart);
+        cartPricingService.recalculateCartPrice(cart);
     }
 
     @Override
@@ -69,13 +67,13 @@ public class HttpSessionCartService implements CartService {
             cart.getCartItems().stream().filter(cartItem -> item.getKey().equals(cartItem.getPhone().getId())).findFirst()
                     .ifPresent(cartItem -> cartItem.setQuantity(item.getValue()));
         }
-        cartPricingService.recalculateTotalPrice(cart);
+        cartPricingService.recalculateCartPrice(cart);
     }
 
     @Override
     public void remove(Long phoneId) {
         cart.getCartItems().removeIf(cartItem -> phoneId.equals(cartItem.getPhone().getId()));
-        cartPricingService.recalculateTotalPrice(cart);
+        cartPricingService.recalculateCartPrice(cart);
     }
 
     @Override
@@ -87,7 +85,12 @@ public class HttpSessionCartService implements CartService {
 
     @Override
     public MiniCart getMiniCart() {
-        return new MiniCart(getCartTotalProductsCount(), cart.getTotalPrice());
+        return new MiniCart(getCartTotalProductsCount(), cart.getSubtotalPrice());
+    }
+
+    @Override
+    public void clearCart() {
+        cart = new Cart();
     }
 
     private Long getCartTotalProductsCount() {

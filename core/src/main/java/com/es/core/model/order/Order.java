@@ -1,12 +1,13 @@
 package com.es.core.model.order;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order
 {
     private Long id;
-    private List<OrderItem> orderItems;
+    private List<OrderItem> orderItems = new ArrayList<>();
     /**
      *  A sum of order item prices;
      */
@@ -23,6 +24,8 @@ public class Order
     private String contactPhoneNo;
 
     private OrderStatus status;
+
+    private String additionalInformation;
 
     public Long getId() {
         return id;
@@ -102,5 +105,13 @@ public class Order
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public String getAdditionalInformation() {
+        return additionalInformation;
+    }
+
+    public void setAdditionalInformation(String additionalInformation) {
+        this.additionalInformation = additionalInformation;
     }
 }
