@@ -73,7 +73,8 @@
         </table>
         <div class="float-right" style="margin: 10px">
           <button class="btn btn-outline-secondary" type="submit">Update</button>
-          <a href="order" class="btn btn-secondary">Order</a>
+          <c:url value="/order" var="orderUrl"/>
+          <a href="${orderUrl}" class="btn btn-secondary">Order</a>
         </div>
       </form:form>
     </c:otherwise>

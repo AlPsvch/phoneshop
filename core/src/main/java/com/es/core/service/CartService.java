@@ -26,6 +26,4 @@ public interface CartService {
     MiniCart getMiniCart();
 
     void clearCart();
-
-    Boolean quantitiesAreValid();
 }

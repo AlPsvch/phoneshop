@@ -11,20 +11,19 @@ import java.math.BigDecimal;
 public class CartPricingServiceImpl implements CartPricingService {
 
     @Value("${delivery.price}")
-    private Integer deliveryPrice;
+    private BigDecimal deliveryPrice;
 
     @Override
     public void recalculateCartPrice(Cart cart) {
         BigDecimal newSubtotalPrice = cart.getCartItems().stream()
                 .map(cartItem -> cartItem.getPhone().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())))
-                .reduce(BigDecimal::add).orElse(BigDecimal.valueOf(0));
+                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
 
         cart.setSubtotalPrice(newSubtotalPrice);
 
-        BigDecimal deliveryPriceBD = new BigDecimal(deliveryPrice);
-        BigDecimal totalPrice = deliveryPriceBD.add(newSubtotalPrice);
+        BigDecimal totalPrice = deliveryPrice.add(newSubtotalPrice);
 
-        cart.setDeliveryPrice(deliveryPriceBD);
+        cart.setDeliveryPrice(deliveryPrice);
         cart.setTotalPrice(totalPrice);
     }
 }

@@ -97,13 +97,6 @@ public class HttpSessionCartService implements CartService {
         return cart.getCartItems().stream().mapToLong(CartItem::getQuantity).sum();
     }
 
-    @Override
-    public Boolean quantitiesAreValid() {
-        boolean removed = cart.getCartItems()
-                .removeIf(cartItem -> !phoneStockService.hasEnoughStock(cartItem.getPhone().getId(), cartItem.getQuantity()));
-        return !removed;
-    }
-
     public void setCart(Cart cart) {
         this.cart = cart;
     }
