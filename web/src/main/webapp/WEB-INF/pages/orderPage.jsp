@@ -17,9 +17,9 @@
   <c:if test="${outOfStock}">
     <p><em>Some items from order went out of stock and were removed from your cart</em></p>
   </c:if><br>
-  <c:set var="orderItems" value="${order.orderItems}"/>
+  <c:set var="cartItems" value="${cart.cartItems}"/>
   <c:choose>
-    <c:when test="${orderItems == null || orderItems.size() <= 0}">
+    <c:when test="${cartItems == null || orderItems.size() <= 0}">
       <p><em>No items in order</em></p>
     </c:when>
     <c:otherwise>
@@ -34,8 +34,8 @@
           <td style="width: 10%">Price</td>
         </tr>
         </thead>
-        <c:forEach var="orderItem" items="${orderItems}">
-          <c:set var="phone" value="${orderItem.phone}"/>
+        <c:forEach var="cartItem" items="${cartItems}">
+          <c:set var="phone" value="${cartItem.phone}"/>
           <c:set var="phoneId" value="${phone.id}"/>
           <tr>
             <td>${phone.brand}</td>
@@ -47,7 +47,7 @@
               </c:forEach>
             </td>
             <td>${phone.displaySizeInches}"</td>
-            <td>${orderItem.quantity}</td>
+            <td>${cartItem.quantity}</td>
             <td>${phone.price}$</td>
           </tr>
         </c:forEach>
@@ -58,15 +58,15 @@
           <col width="200">
           <tr>
             <th scope="row">Subtotal</th>
-            <td>${order.subtotal}$</td>
+            <td>${cart.subtotalPrice}$</td>
           </tr>
           <tr>
             <th scope="row">Delivery</th>
-            <td>${order.deliveryPrice}$</td>
+            <td>${cart.deliveryPrice}$</td>
           </tr>
           <tr>
             <th scope="row">TOTAL</th>
-            <td>${order.totalPrice}$</td>
+            <td>${cart.totalPrice}$</td>
           </tr>
         </table>
       </div>

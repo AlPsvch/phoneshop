@@ -13,6 +13,8 @@ import java.util.List;
 public class Cart {
 
     private List<CartItem> cartItems = new ArrayList<>();
+    private BigDecimal deliveryPrice = new BigDecimal(0);
+    private BigDecimal subtotalPrice = new BigDecimal(0);
     private BigDecimal totalPrice = new BigDecimal(0);
 
 
@@ -22,6 +24,22 @@ public class Cart {
 
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
+    }
+
+    public BigDecimal getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public void setDeliveryPrice(BigDecimal deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
+    }
+
+    public BigDecimal getSubtotalPrice() {
+        return subtotalPrice;
+    }
+
+    public void setSubtotalPrice(BigDecimal subtotalPrice) {
+        this.subtotalPrice = subtotalPrice;
     }
 
     public BigDecimal getTotalPrice() {

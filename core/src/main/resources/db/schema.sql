@@ -57,7 +57,7 @@ create table stocks (
 );
 
 create table orders (
-  orderId BIGINT AUTO_INCREMENT primary key,
+  id BIGINT AUTO_INCREMENT primary key,
   subtotal FLOAT,
   deliveryPrice FLOAT,
   totalPrice FLOAT,

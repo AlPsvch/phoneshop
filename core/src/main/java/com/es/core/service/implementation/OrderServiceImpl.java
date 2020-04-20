@@ -1,6 +1,8 @@
 package com.es.core.service.implementation;
 
 import com.es.core.cart.Cart;
+import com.es.core.exceptions.OrderNotFoundException;
+import com.es.core.exceptions.OutOfStockException;
 import com.es.core.model.order.Order;
 import com.es.core.model.order.OrderDao;
 import com.es.core.model.order.OrderItem;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -37,15 +38,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(Cart cart) {
+        if(!cartService.quantitiesAreValid()) {
+            throw new OutOfStockException("Some products from your cart are out of stock, they were removed from cart");
+        }
+
         Order order = new Order();
 
-        BigDecimal subtotalPrice = cart.getTotalPrice();
-        BigDecimal delPrice = new BigDecimal(deliveryPrice);
-
         order.setStatus(OrderStatus.NEW);
-        order.setSubtotal(subtotalPrice);
-        order.setDeliveryPrice(delPrice);
-        order.setTotalPrice(delPrice.add(subtotalPrice));
+        order.setSubtotal(cart.getSubtotalPrice());
+        order.setDeliveryPrice(cart.getDeliveryPrice());
+        order.setTotalPrice(cart.getTotalPrice());
         fillOrderItems(order, cart);
 
         return order;
@@ -76,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Optional<Order> getOrder(Long orderId) {
-        return orderDao.get(orderId);
+    public Order getOrder(Long orderId) {
+        return orderDao.get(orderId).orElseThrow(OrderNotFoundException::new);
     }
 }

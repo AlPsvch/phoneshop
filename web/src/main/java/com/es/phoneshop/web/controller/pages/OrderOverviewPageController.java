@@ -21,7 +21,7 @@ public class OrderOverviewPageController {
 
     @GetMapping("/{orderId}")
     public String getOrderOverview(@PathVariable Long orderId, Model model) {
-        orderService.getOrder(orderId).ifPresent(order -> model.addAttribute(ORDER_ATTRIBUTE, order));
+        model.addAttribute(ORDER_ATTRIBUTE, orderService.getOrder(orderId));
         return "orderOverviewPage";
     }
 }

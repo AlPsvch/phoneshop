@@ -10,5 +10,5 @@ public interface OrderService {
     Order createOrder(Cart cart);
     Long placeOrder(Order order) throws OutOfStockException;
     Boolean quantitiesAreValid(Order order);
-    Optional<Order> getOrder(Long orderId);
+    Order getOrder(Long orderId);
 }

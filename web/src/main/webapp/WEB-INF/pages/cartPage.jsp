@@ -73,7 +73,7 @@
         </table>
         <div class="float-right" style="margin: 10px">
           <button class="btn btn-outline-secondary" type="submit">Update</button>
-          <a href="${pageContext.request.contextPath}/order" class="btn btn-secondary">Order</a>
+          <a href="order" class="btn btn-secondary">Order</a>
         </div>
       </form:form>
     </c:otherwise>

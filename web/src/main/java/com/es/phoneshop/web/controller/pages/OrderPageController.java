@@ -19,11 +19,10 @@ import javax.validation.Valid;
 @RequestMapping(value = "/order")
 public class OrderPageController {
 
-    private static final String ORDER_ATTRIBUTE = "order";
+    private static final String CART_ATTRIBUTE = "cart";
 
     private static final String ORDER_FORM_ATTRIBUTE = "orderForm";
 
-    private static final String OUT_OF_STOCK = "outOfStock";
 
     @Resource
     private OrderService orderService;
@@ -34,26 +33,19 @@ public class OrderPageController {
 
     @GetMapping
     public String getOrder(Model model) {
-        Order order = orderService.createOrder(cartService.getCart());
-        model.addAttribute(ORDER_ATTRIBUTE, order);
+        model.addAttribute(CART_ATTRIBUTE, cartService.getCart());
         model.addAttribute(ORDER_FORM_ATTRIBUTE, new OrderForm());
         return "orderPage";
     }
 
     @PostMapping
     public String placeOrder(@ModelAttribute @Valid OrderForm orderForm, BindingResult bindingResult, Model model) {
-        Order order = orderService.createOrder(cartService.getCart());
-
         if (bindingResult.hasErrors()) {
-            model.addAttribute(ORDER_ATTRIBUTE, order);
+            model.addAttribute(CART_ATTRIBUTE, cartService.getCart());
             return "orderPage";
         }
 
-        if (!orderService.quantitiesAreValid(order)) {
-            model.addAttribute(OUT_OF_STOCK, Boolean.TRUE);
-            model.addAttribute(ORDER_ATTRIBUTE, order);
-            return "orderPage";
-        }
+        Order order = orderService.createOrder(cartService.getCart());
 
         fillOrderInformation(order, orderForm);
         Long id = orderService.placeOrder(order);

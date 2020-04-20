@@ -1,10 +1,10 @@
 package com.es.core.model.order;
 
-import com.es.core.model.phone.PhoneDao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -17,24 +17,24 @@ import java.util.*;
 @Transactional
 public class JdbcOrderDao implements OrderDao {
 
-    private static final String GET_ORDER_BY_KEY_QUERY = "SELECT * FROM orders WHERE orderId = ?";
+    private static final String GET_ORDER_BY_KEY_QUERY = "SELECT * FROM orders WHERE id = ?";
 
     private static final String GET_ORDER_ITEMS_BY_ORDER_ID = "SELECT * FROM item2order WHERE orderId = ?";
 
     @Resource
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Resource
-    PhoneDao phoneDao;
+    private SimpleJdbcInsert orderSimpleJdbcInsert;
 
     @Resource
-    SimpleJdbcInsert orderSimpleJdbcInsert;
+    private SimpleJdbcInsert orderItemSimpleJdbcInsert;
 
     @Resource
-    SimpleJdbcInsert orderItemSimpleJdbcInsert;
+    private BeanPropertyRowMapper<Order> orderBeanPropertyRowMapper;
 
     @Resource
-    BeanPropertyRowMapper<Order> orderBeanPropertyRowMapper;
+    private OrderItemRowMapper orderItemRowMapper;
 
 
     @Override
@@ -44,7 +44,6 @@ public class JdbcOrderDao implements OrderDao {
         Order order;
         try {
             order = jdbcTemplate.queryForObject(GET_ORDER_BY_KEY_QUERY, orderBeanPropertyRowMapper, key);
-            order.setId(key);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -54,7 +53,7 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     private List<OrderItem> extractOrderItems(Order order) {
-        List<OrderItem> orderItems = jdbcTemplate.query(GET_ORDER_ITEMS_BY_ORDER_ID, new OrderItemRowMapper(phoneDao), order.getId());
+        List<OrderItem> orderItems = jdbcTemplate.query(GET_ORDER_ITEMS_BY_ORDER_ID, orderItemRowMapper, order.getId());
         orderItems.forEach(orderItem -> orderItem.setOrder(order));
         return orderItems;
     }
@@ -75,11 +74,11 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     private void save(OrderItem orderItem) {
-        Map<String, Object> params = new HashMap<>();
+        MapSqlParameterSource params = new MapSqlParameterSource();
 
-        params.put("orderId", orderItem.getOrder().getId());
-        params.put("phoneId", orderItem.getPhone().getId());
-        params.put("quantity", orderItem.getQuantity());
+        params.addValue("orderId", orderItem.getOrder().getId());
+        params.addValue("phoneId", orderItem.getPhone().getId());
+        params.addValue("quantity", orderItem.getQuantity());
 
         orderItemSimpleJdbcInsert.execute(params);
     }
