@@ -12,6 +12,8 @@ import com.es.core.service.OrderService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
         order.setSubtotal(cart.getSubtotalPrice());
         order.setDeliveryPrice(cart.getDeliveryPrice());
         order.setTotalPrice(cart.getTotalPrice());
+        order.setCreationDate(getCurrentDateTime());
         fillOrderItems(order, cart);
 
         return order;
@@ -60,5 +63,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order getOrder(Long orderId) {
         return orderDao.get(orderId).orElseThrow(OrderNotFoundException::new);
+    }
+
+    @Override
+    public List<Order> getOrders() {
+        return orderDao.findAll();
+    }
+
+    @Override
+    public void updateOrderStatus(Long orderId, OrderStatus orderStatus) {
+        orderDao.updateOrderStatus(orderId, orderStatus);
+    }
+
+    private Date getCurrentDateTime() {
+        java.util.Date currentTime = new java.util.Date();
+        return new Date(currentTime.getTime());
     }
 }

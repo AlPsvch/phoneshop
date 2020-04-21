@@ -23,6 +23,8 @@
       </a>
     </div>
     <div class="float-right">
+      <c:url var="adminUrl" value="/admin/orders"/>
+      <a href="${adminUrl}">admin</a>
       <a href="#">Login</a><br>
       <c:if test="${miniCart != null}">
         <a href="${pageContext.request.contextPath}/cart" class="btn btn-outline-dark">

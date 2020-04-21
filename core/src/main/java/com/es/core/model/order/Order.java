@@ -1,6 +1,7 @@
 package com.es.core.model.order;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class Order
     private OrderStatus status;
 
     private String additionalInformation;
+
+    private Date creationDate;
 
     public Long getId() {
         return id;
@@ -113,5 +116,13 @@ public class Order
 
     public void setAdditionalInformation(String additionalInformation) {
         this.additionalInformation = additionalInformation;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }

@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @Transactional
@@ -20,6 +22,10 @@ public class JdbcOrderDao implements OrderDao {
     private static final String GET_ORDER_BY_KEY_QUERY = "SELECT * FROM orders WHERE id = ?";
 
     private static final String GET_ORDER_ITEMS_BY_ORDER_ID = "SELECT * FROM item2order WHERE orderId = ?";
+
+    private static final String GET_ALL_ORDERS_QUERY = "SELECT * FROM orders";
+
+    private static final String UPDATE_ORDER_STATUS_QUERY = "UPDATE orders SET status = ? WHERE id = ?";
 
     @Resource
     private JdbcTemplate jdbcTemplate;
@@ -81,5 +87,19 @@ public class JdbcOrderDao implements OrderDao {
         params.addValue("quantity", orderItem.getQuantity());
 
         orderItemSimpleJdbcInsert.execute(params);
+    }
+
+    @Override
+    public List<Order> findAll() {
+        List<Order> orders = jdbcTemplate.query(GET_ALL_ORDERS_QUERY, orderBeanPropertyRowMapper);
+
+        orders.forEach(order -> order.setOrderItems(extractOrderItems(order)));
+
+        return orders;
+    }
+
+    @Override
+    public void updateOrderStatus(Long id, OrderStatus orderStatus) {
+        jdbcTemplate.update(UPDATE_ORDER_STATUS_QUERY, orderStatus.name(), id);
     }
 }
