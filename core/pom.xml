@@ -56,7 +56,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
-      <version>4.2.3.RELEASE</version>
+      <version>${org.springsecurity-version}</version>
     </dependency>
 
   </dependencies>
