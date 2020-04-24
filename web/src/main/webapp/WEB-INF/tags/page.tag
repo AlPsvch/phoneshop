@@ -1,4 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ attribute name="pageTitle" required="true" %>
 
 <html>
@@ -13,6 +15,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
           integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
           crossorigin="anonymous"></script>
+  <sec:csrfMetaTags/>
 </head>
 <body>
 <header>
@@ -23,9 +26,19 @@
       </a>
     </div>
     <div class="float-right">
-      <c:url var="adminUrl" value="/admin/orders"/>
-      <a href="${adminUrl}">admin</a>
-      <a href="#">Login</a><br>
+      <sec:authorize access="isAnonymous()">
+        <a href="<c:url value="/login"/>">Login</a><br>
+      </sec:authorize>
+      <sec:authorize access="isAuthenticated()">
+        <sec:authentication property="principal.username"/>
+        <a href="<c:url value="/admin/orders"/>">Orders</a>
+        <c:url value="/logout" var="logoutUrl"/>
+        <form:form action="${logoutUrl}" method="POST">
+          <input type="submit" value="Logout" />
+        </form:form>
+      </sec:authorize>
+
+      <br>
       <c:if test="${miniCart != null}">
         <a href="${pageContext.request.contextPath}/cart" class="btn btn-outline-dark">
           My cart: ${miniCart.totalCount} items ${miniCart.subtotalPrice}$

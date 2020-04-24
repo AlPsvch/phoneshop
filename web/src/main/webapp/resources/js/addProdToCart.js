@@ -1,3 +1,11 @@
+$(function () {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+});
+
 function addToCart(phoneId, url) {
     $.ajax({
         url: url,
@@ -10,6 +18,7 @@ function addToCart(phoneId, url) {
             phoneId: phoneId,
             quantity: $('#quantity-' + phoneId).val()
         }),
+
         success: function (response) {
             showAddToCartResponse('ok', 'Successfully added to cart', phoneId);
         },
