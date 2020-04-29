@@ -93,6 +93,13 @@ public class HttpSessionCartService implements CartService {
         cart = new Cart();
     }
 
+    @Override
+    public void addPhones(Map<Long, Long> phones) {
+        if (phones != null && !phones.isEmpty()) {
+            phones.forEach(this::addPhone);
+        }
+    }
+
     private Long getCartTotalProductsCount() {
         return cart.getCartItems().stream().mapToLong(CartItem::getQuantity).sum();
     }

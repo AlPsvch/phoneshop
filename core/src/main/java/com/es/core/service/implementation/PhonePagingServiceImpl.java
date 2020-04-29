@@ -33,6 +33,11 @@ public class PhonePagingServiceImpl implements PhonePagingService {
         return phoneDao.get(id);
     }
 
+    @Override
+    public boolean phoneExists(Long id) {
+        return phoneDao.getWithPrice(id).isPresent();
+    }
+
     private List<Phone> findPhones(String query, String order, SortingDirection sortDirection, int page) {
         return phoneDao.findAll(query, order, sortDirection, (page - 1) * PRODUCTS_TO_DISPLAY_NUMBER, PRODUCTS_TO_DISPLAY_NUMBER);
     }

@@ -25,6 +25,12 @@
         <h2>Phonify</h2>
       </a>
     </div>
+    <div class="float-left">
+      <a href="<c:url value="/quickOrder"/>" style="margin-left: 5px" class="btn btn-secondary btn-lg"
+         role="button">
+        <h5>Make quick order</h5>
+      </a>
+    </div>
     <div class="float-right">
       <sec:authorize access="isAnonymous()">
         <a href="<c:url value="/login"/>">Login</a><br>

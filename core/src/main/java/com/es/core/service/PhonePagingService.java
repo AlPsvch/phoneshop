@@ -12,4 +12,5 @@ public interface PhonePagingService {
 
     Optional<Phone> getPhone(Long id);
 
+    boolean phoneExists(Long id);
 }

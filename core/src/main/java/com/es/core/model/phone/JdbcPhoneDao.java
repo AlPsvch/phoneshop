@@ -23,6 +23,8 @@ public class JdbcPhoneDao implements PhoneDao {
 
     private static final String GET_PHONE_BY_KEY_QUERY = "SELECT * FROM phones WHERE id = ?";
 
+    private static final String GET_PHONE_BY_KEY_WITH_PRICE_QUERY = "SELECT * FROM phones WHERE id = ? AND price IS NOT NULL";
+
     private static final String GET_COLORS_BY_PHONE_KEY_QUERY = "SELECT * FROM colors " +
             "INNER JOIN phone2color ON (colors.id = phone2color.colorId AND phone2color.phoneId = ?)";
 
@@ -59,13 +61,13 @@ public class JdbcPhoneDao implements PhoneDao {
     private BeanPropertyRowMapper<Color> colorBeanPropertyRowMapper;
 
 
-    public Optional<Phone> get(final Long key) {
+    public Optional<Phone> get(final Long key, String query) {
         Objects.requireNonNull(key, "Key must not be null");
 
         Phone phone;
 
         try {
-            phone = jdbcTemplate.queryForObject(GET_PHONE_BY_KEY_QUERY, phoneBeanPropertyRowMapper, key);
+            phone = jdbcTemplate.queryForObject(query, phoneBeanPropertyRowMapper, key);
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -75,6 +77,15 @@ public class JdbcPhoneDao implements PhoneDao {
         return Optional.of(phone);
     }
 
+    @Override
+    public Optional<Phone> get(Long key) {
+        return get(key, GET_PHONE_BY_KEY_QUERY);
+    }
+
+    @Override
+    public Optional<Phone> getWithPrice(Long key) {
+        return get(key, GET_PHONE_BY_KEY_WITH_PRICE_QUERY);
+    }
 
     private Set<Color> extractColors(final Long key) {
         List<Color> colorList = jdbcTemplate.query(GET_COLORS_BY_PHONE_KEY_QUERY, colorBeanPropertyRowMapper, key);

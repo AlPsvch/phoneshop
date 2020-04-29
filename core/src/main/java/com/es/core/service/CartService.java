@@ -3,7 +3,6 @@ package com.es.core.service;
 import com.es.core.cart.Cart;
 import com.es.core.cart.MiniCart;
 import com.es.core.model.phone.Phone;
-import org.springframework.ui.Model;
 
 import java.util.Map;
 
@@ -26,4 +25,6 @@ public interface CartService {
     MiniCart getMiniCart();
 
     void clearCart();
+
+    void addPhones(Map<Long, Long> phones);
 }
