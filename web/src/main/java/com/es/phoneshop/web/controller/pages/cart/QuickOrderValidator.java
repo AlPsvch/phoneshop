@@ -48,7 +48,7 @@ public class QuickOrderValidator implements Validator {
     }
 
     private void validateCode(QuickOrderItem item, int index, Errors errors) {
-        Long code = tryExtractLong(item.getCode());
+        Long code = item.getCode();
         if (code == null) {
             errors.rejectValue(String.format(QUICK_ITEM_CODE_FORM, index), "code.invalid", "The value must must be a number");
             return;
@@ -63,21 +63,13 @@ public class QuickOrderValidator implements Validator {
     }
 
     private void validateQuantity(QuickOrderItem item, int index, Errors errors) {
-        Long quantity = tryExtractLong(item.getQuantity());
+        Long quantity = item.getQuantity();
         if (quantity == null) {
             errors.rejectValue(String.format(QUICK_ITEM_QUANTITY_FORM, index), "quantity.invalid", "The value must must be a number");
             return;
         }
         if (quantity <= 0) {
             errors.rejectValue(String.format(QUICK_ITEM_QUANTITY_FORM, index), "quantity.negative", "The value must be greater than 0");
-        }
-    }
-
-    private Long tryExtractLong(String str) {
-        try {
-            return Long.parseLong(str);
-        } catch (NumberFormatException e) {
-            return null;
         }
     }
 }

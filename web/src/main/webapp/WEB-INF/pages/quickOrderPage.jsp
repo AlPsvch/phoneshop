@@ -27,7 +27,7 @@
         <tr>
           <td>
             <form:input path="quickOrderItems[${status.index}].code" type="text" class="form-control" placeholder="Phone code"
-                        name="code" value="${quickOrderItem.quantity}"/><br>
+                        name="code" value="${quickOrderItem.code}"/><br>
             <c:if test="${containErrors}">
               <form:errors path="quickOrderItems[${status.index}].code" cssStyle="color: red"/>
             </c:if>

@@ -2,22 +2,22 @@ package com.es.phoneshop.web.controller.pages.cart;
 
 public class QuickOrderItem {
 
-    private String code;
-    private String quantity;
+    private Long code;
+    private Long quantity;
 
-    public String getCode() {
+    public Long getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Long code) {
         this.code = code;
     }
 
-    public String getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 }

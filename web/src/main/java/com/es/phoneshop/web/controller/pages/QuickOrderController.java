@@ -59,9 +59,9 @@ public class QuickOrderController {
             if (!(bindingResult.hasFieldErrors("quickOrderItems[" + i + "].code")
                     || bindingResult.hasFieldErrors("quickOrderItems[" + i + "].quantity"))) {
 
-                phones.put(Long.valueOf(orderItem.getCode()), Long.valueOf(orderItem.getQuantity()));
-                orderItem.setCode("");
-                orderItem.setQuantity("");
+                phones.put(orderItem.getCode(), orderItem.getQuantity());
+                orderItem.setCode(0L);
+                orderItem.setQuantity(0L);
             }
             i++;
         }
